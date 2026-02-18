@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flood Early Warning System</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 800px;
+            margin: 40px auto;
+            background: #ffffff;
+            color: #333;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a3c5c;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input, select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        .model-select {
+            grid-column: span 2;
+        }
+
+        .btn {
+            grid-column: span 2;
+            padding: 12px;
+            font-size: 16px;
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #0c5ed7;
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f4f7fa;
+        }
+
+        .warning {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .bar-container {
+            background: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 25px;
+            margin-top: 10px;
+        }
+
+        .bar {
+            height: 100%;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            line-height: 25px;
+        }
+
+        .low { background: #2ecc71; }
+        .medium { background: #f1c40f; color: #333; }
+        .high { background: #e74c3c; }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🌊 Flood Early Warning System</h1>
+    <h3>Real-Time Risk Prediction Dashboard</h3>
+
+    <form method="post">
+
+        <!-- ✅ MODEL TOGGLE ADDED HERE -->
+        <div class="model-select">
+            <label>Select Prediction Model</label>
+            <select name="model" required>
+                <option value="lr" {% if selected_model == "lr" %}selected{% endif %}>
+                    Logistic Regression (Early Warning)
+                </option>
+                <option value="rf" {% if selected_model == "rf" %}selected{% endif %}>
+                    Random Forest (Robust Analysis)
+                </option>
+            </select>
+        </div>
+
+        <label>Temperature</label>
+        <input type="number" step="any" name="Temp" required>
+
+        <label>Humidity</label>
+        <input type="number" step="any" name="Humidity" required>
+
+        <label>Cloud Cover</label>
+        <input type="number" step="any" name="CloudCover" required>
+
+        <label>Annual Rainfall</label>
+        <input type="number" step="any" name="ANNUAL" required>
+
+        <label>Jan–Feb Rainfall</label>
+        <input type="number" step="any" name="JanFeb" required>
+
+        <label>Mar–May Rainfall</label>
+        <input type="number" step="any" name="MarMay" required>
+
+        <label>Jun–Sep Rainfall</label>
+        <input type="number" step="any" name="JunSep" required>
+
+        <label>Oct–Dec Rainfall</label>
+        <input type="number" step="any" name="OctDec" required>
+
+        <label>Avg June Rainfall</label>
+        <input type="number" step="any" name="avgjune" required>
+
+        <label>Sub-Region</label>
+        <input type="number" step="any" name="sub" required>
+
+        <button class="btn">Predict Flood Risk</button>
+    </form>
+
+    {% if probability is not none %}
+    <div class="result-box">
+        <h3>Prediction Result</h3>
+
+        <p><b>Flood Probability:</b> {{ (probability * 100) | round(2) }}%</p>
+
+        <div class="bar-container">
+            {% if probability < 0.4 %}
+                <div class="bar low" style="width: {{ probability*100 }}%">LOW</div>
+            {% elif probability < 0.7 %}
+                <div class="bar medium" style="width: {{ probability*100 }}%">MODERATE</div>
+            {% else %}
+                <div class="bar high" style="width: {{ probability*100 }}%">HIGH</div>
+            {% endif %}
+        </div>
+
+        <div class="warning">
+            {{ warning }}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        ML-Based Flood Prediction | Real-Time Decision Support System
+    </div>
+</div>
+
+</body>
+</html>
